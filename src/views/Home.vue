@@ -1,18 +1,28 @@
+/* eslint-disable */
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Input class="input"/>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+
+// import HelloWorld from '@/components/HelloWorld'
+
+import Input from '@/components/Input'
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+    Input
   }
 }
 </script>
+
+<style lang="scss" scoped>
+
+.input {
+  margin-top: 30px;
+}
+
+</style>
