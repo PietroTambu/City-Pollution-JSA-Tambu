@@ -2,8 +2,11 @@
   <div class="div-main">
 
     <div class="aqi">
-      <h1>{{ name }}</h1>
+      <h1 id="tooltip-target-1">{{ name }}</h1>
       <h1>AQI: {{ aqi }}</h1>
+      <b-tooltip target="tooltip-target-1" triggers="hover" placement="right">
+        {{ longName }}
+      </b-tooltip>
     </div>
 
     <b-tabs v-model="tabIndex" pills card fill>
@@ -11,7 +14,7 @@
       <b-tab title="City name" :title-link-class="linkClass(0)" active>
         <div class="div-search">
           <h3 class="title-search">Insert name of the city:</h3>
-          <div><input v-model="inputCity" placeholder="insert city name"/></div>
+          <div><input v-model="inputCity" placeholder="insert city name" v-on:keyup.enter="get('city')"/></div>
           <div><button @click="get('city')">Search</button></div>
         </div>
       </b-tab>
@@ -25,7 +28,7 @@
         </div>
       </b-tab>
 
-      <b-tab title="Ip position" :title-link-class="linkClass(2)">
+      <b-tab title="IP position" :title-link-class="linkClass(2)">
         <div class="div-search">
           <h3 class="title-search">Get AQI from your IP position:</h3>
           <button id="buttonCoordinates" @click="get('here')">Search</button>
@@ -33,7 +36,6 @@
       </b-tab>
 
     </b-tabs>
-
   </div>
 </template>
 
@@ -47,6 +49,7 @@ export default {
     return {
       Data: {},
       aqi: '-',
+      longName: '',
       name: '',
       inputCity: '',
       inputLan: '',
@@ -64,7 +67,8 @@ export default {
         this.data = await service.axiosRequest(usage)
       }
       this.data = this.data.data
-      this.name = this.data.city.name
+      this.longName = this.data.city.name
+      this.name = this.longName.substr(0, this.longName.indexOf(','))
       this.aqi = lodash.lodashCheck(this.data)
 
       console.log(this.data)
@@ -75,9 +79,13 @@ export default {
       } else {
         return ['bg-light', 'text-dark']
       }
+    },
+    mounted () {
+      window.addEventListener('keypress', e => {
+        console.log(String.fromCharCode(e.keyCode))
+      })
     }
   }
-
 }
 </script>
 
@@ -152,6 +160,7 @@ button:hover {
 
 .aqi h1 {
   margin: auto;
+  width: fit-content;
   margin-top: 10px;
   font-family: Fraunces;
 }
