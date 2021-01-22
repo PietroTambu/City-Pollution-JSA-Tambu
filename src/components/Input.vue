@@ -30,63 +30,49 @@
     </b-tabs>
 
     <div>
-      <b-card no-body>
-        <b-tabs v-model="tabIndexInfo" pills card fill>
-          <b-tab :title="'AQI: ' + aqi" :title-link-class="linkClassInfo(0)" active>
-            <b-card bg-variant="AQI_Hazardous" text-variant="white" header="Hazardous" class="text-center" v-if=" aqi > 300">
+      <b-tabs v-model="tabIndexInfo" pills card fill>
+        <b-tab :title="'AQI: ' + aqi" :title-link-class="linkClassInfo(0)" active>
+          <b-card bg-variant="AQI_Hazardous" text-variant="white" header="Hazardous" class="text-center" v-if=" aqi > 300">
+            <p class="card-text font-weight-bold">AQI: {{ aqi }}</p>
+            <p class="card-text">{{ longName }}</p>
+            <p class="card-text">Health alert: everyone may experience more serious health effects</p>
+          </b-card>
+          <b-card bg-variant="AQI_Very_Unhealthy" text-variant="white" header="Very Unhealthy" class="text-center" v-else-if=" aqi > 200">
+            <p class="card-text font-weight-bold">AQI: {{ aqi }}</p>
+            <p class="card-text">{{ longName }}</p>
+            <p class="card-text">Health warnings of emergency conditions. The entire population is more likely to be affected</p>
+          </b-card>
+          <b-card bg-variant="AQI_Unhealthy" text-variant="white" header="Unhealthy" class="text-center" v-else-if=" aqi > 150">
+            <p class="card-text font-weight-bold">AQI: {{ aqi }}</p>
+            <p class="card-text">{{ longName }}</p>
+            <p class="card-text">Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects</p>
+          </b-card>
+          <b-card bg-variant="AQI_Unhealthy_Sensitive" text-variant="white" header="Unhealthy for Sensitive Groups" class="text-center" v-else-if=" aqi > 100">
+            <p class="card-text font-weight-bold">AQI: {{ aqi }}</p>
+            <p class="card-text">{{ longName }}</p>
+            <p class="card-text">Members of sensitive groups may experience health effects. The general public is not likely to be affected.</p>
+          </b-card>
+          <b-card bg-variant="AQI_Moderate" text-variant="white" header="Moderate" class="text-center" v-else-if=" aqi > 50">
+            <p class="card-text font-weight-bold">AQI: {{ aqi }}</p>
+            <p class="card-text">{{ longName }}</p>
+            <p class="card-text">Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.</p>
+          </b-card>
+          <b-card bg-variant="AQI_Good" text-variant="white" header="Good" class="text-center" v-else-if=" aqi <= 50">
+            <p class="card-text font-weight-bold">AQI: {{ aqi }}</p>
+            <p class="card-text">{{ longName }}</p>
+            <p class="card-text">Air quality is considered satisfactory, and air pollution poses little or no risk</p>
+          </b-card>
+        </b-tab>
+        <b-tab :title="name" :title-link-class="linkClassInfo(1)">
+            <b-card class="bg-secondary text-light">
               <p class="card-text font-weight-bold">Information: </p>
               <p class="card-text">{{ longName }}</p>
               <p class="card-text">Coordinates:</p>
               <p class="card-text">Latitude: {{ lat }}</p>
               <p class="card-text">Longitude: {{ lon }}</p>
             </b-card>
-            <b-card bg-variant="AQI_Very_Unhealthy" text-variant="white" header="Very Unhealthy" class="text-center" v-else-if=" aqi > 200">
-              <p class="card-text font-weight-bold">Information: </p>
-              <p class="card-text">{{ longName }}</p>
-              <p class="card-text">Coordinates:</p>
-              <p class="card-text">Latitude: {{ lat }}</p>
-              <p class="card-text">Longitude: {{ lon }}</p>
-            </b-card>
-            <b-card bg-variant="AQI_Unhealthy" text-variant="white" header="Unhealthy" class="text-center" v-else-if=" aqi > 150">
-              <p class="card-text font-weight-bold">Information: </p>
-              <p class="card-text">{{ longName }}</p>
-              <p class="card-text">Coordinates:</p>
-              <p class="card-text">Latitude: {{ lat }}</p>
-              <p class="card-text">Longitude: {{ lon }}</p>
-            </b-card>
-            <b-card bg-variant="AQI_Unhealthy_Sensitive" text-variant="white" header="Unhealthy for Sensitive Groups" class="text-center" v-else-if=" aqi > 100">
-              <p class="card-text font-weight-bold">Information: </p>
-              <p class="card-text">{{ longName }}</p>
-              <p class="card-text">Coordinates:</p>
-              <p class="card-text">Latitude: {{ lat }}</p>
-              <p class="card-text">Longitude: {{ lon }}</p>
-            </b-card>
-            <b-card bg-variant="AQI_Moderate" text-variant="white" header="Moderate" class="text-center" v-else-if=" aqi > 50">
-              <p class="card-text font-weight-bold">Information: </p>
-              <p class="card-text">{{ longName }}</p>
-              <p class="card-text">Coordinates:</p>
-              <p class="card-text">Latitude: {{ lat }}</p>
-              <p class="card-text">Longitude: {{ lon }}</p>
-            </b-card>
-            <b-card bg-variant="AQI_Good" text-variant="white" header="Good" class="text-center" v-else-if=" aqi <= 50">
-              <p class="card-text font-weight-bold">Information: </p>
-              <p class="card-text">{{ longName }}</p>
-              <p class="card-text">Coordinates:</p>
-              <p class="card-text">Latitude: {{ lat }}</p>
-              <p class="card-text">Longitude: {{ lon }}</p>
-            </b-card>
-          </b-tab>
-          <b-tab :title="name" :title-link-class="linkClassInfo(1)">
-              <b-card class="bg-secondary text-light">
-                <p class="card-text font-weight-bold">Information: </p>
-                <p class="card-text">{{ longName }}</p>
-                <p class="card-text">Coordinates:</p>
-                <p class="card-text">Latitude: {{ lat }}</p>
-                <p class="card-text">Longitude: {{ lon }}</p>
-              </b-card>
-          </b-tab>
-        </b-tabs>
-      </b-card>
+        </b-tab>
+      </b-tabs>
     </div>
   </div>
 </template>
@@ -102,7 +88,7 @@ export default {
       Data: {},
       aqi: '-',
       longName: '',
-      name: '',
+      name: 'Location: -',
       lat: '',
       lon: '',
       inputCity: '',
