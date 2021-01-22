@@ -1,4 +1,3 @@
-/* eslint-disable */
 <template>
   <div class="div-main">
 
@@ -7,23 +6,34 @@
       <h1>AQI: {{ aqi }}</h1>
     </div>
 
-    <div class="div-search">
-      <h3 class="title-search">Insert name of the city:</h3>
-      <div><input v-model="inputCity" placeholder="insert city name"/></div>
-      <div><button @click="get('city')">Search</button></div>
-    </div>
+    <b-tabs v-model="tabIndex" pills card fill>
 
-    <div class="div-search">
-      <h3 class="title-search">Insert geo-coordinates:</h3>
-      <div><input v-model="inputLan" placeholder="insert latitude"/></div>
-      <div><input v-model="inputLon" placeholder="insert longitude"/></div>
-      <div><button @click="get('coords')">Search</button></div>
-    </div>
+      <b-tab title="City name" :title-link-class="linkClass(0)" active>
+        <div class="div-search">
+          <h3 class="title-search">Insert name of the city:</h3>
+          <div><input v-model="inputCity" placeholder="insert city name"/></div>
+          <div><button @click="get('city')">Search</button></div>
+        </div>
+      </b-tab>
 
-    <div class="div-search">
-      <h3 class="title-search">Get AQI from your IP position:</h3>
-      <button id="buttonCoordinates" @click="get('here')">Search</button>
-    </div>
+      <b-tab title="Geo-coordinates" :title-link-class="linkClass(1)">
+        <div class="div-search">
+          <h3 class="title-search">Insert geo-coordinates:</h3>
+          <div><input v-model="inputLan" placeholder="insert latitude"/></div>
+          <div><input v-model="inputLon" placeholder="insert longitude"/></div>
+          <div><button @click="get('coords')">Search</button></div>
+        </div>
+      </b-tab>
+
+      <b-tab title="Ip position" :title-link-class="linkClass(2)">
+        <div class="div-search">
+          <h3 class="title-search">Get AQI from your IP position:</h3>
+          <button id="buttonCoordinates" @click="get('here')">Search</button>
+        </div>
+      </b-tab>
+
+    </b-tabs>
+
   </div>
 </template>
 
@@ -40,7 +50,8 @@ export default {
       name: '',
       inputCity: '',
       inputLan: '',
-      inputLon: ''
+      inputLon: '',
+      tabIndex: 0
     }
   },
   methods: {
@@ -57,6 +68,13 @@ export default {
       this.aqi = lodash.lodashCheck(this.data)
 
       console.log(this.data)
+    },
+    linkClass (idx) {
+      if (this.tabIndex === idx) {
+        return ['bg-secondary', 'text-light', 'font-weight-bold']
+      } else {
+        return ['bg-light', 'text-dark']
+      }
     }
   }
 
@@ -134,7 +152,7 @@ button:hover {
 
 .aqi h1 {
   margin: auto;
-  margin-top: 20px;
+  margin-top: 10px;
   font-family: Fraunces;
 }
 
