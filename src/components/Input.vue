@@ -1,41 +1,93 @@
 <template>
   <div class="div-main">
 
-    <div class="aqi">
-      <h1 id="tooltip-target-1">{{ name }}</h1>
-      <h1>AQI: {{ aqi }}</h1>
-      <b-tooltip target="tooltip-target-1" triggers="hover" placement="right">
-        {{ longName }}
-      </b-tooltip>
-    </div>
+    <b-tabs v-model="tabIndexInputType" pills card fill>
 
-    <b-tabs v-model="tabIndex" pills card fill>
-
-      <b-tab title="City name" :title-link-class="linkClass(0)" active>
-        <div class="div-search">
+      <b-tab title="City name" :title-link-class="linkClassInputType(0)" active>
+        <div class="div-style">
           <h3 class="title-search">Insert name of the city:</h3>
           <div><input v-model="inputCity" placeholder="insert city name" v-on:keyup.enter="get('city')"/></div>
           <div><button @click="get('city')">Search</button></div>
         </div>
       </b-tab>
 
-      <b-tab title="Geo-coordinates" :title-link-class="linkClass(1)">
-        <div class="div-search">
+      <b-tab title="Geo-coordinates" :title-link-class="linkClassInputType(1)">
+        <div class="div-style">
           <h3 class="title-search">Insert geo-coordinates:</h3>
-          <div><input v-model="inputLan" placeholder="insert latitude"/></div>
-          <div><input v-model="inputLon" placeholder="insert longitude"/></div>
+          <div><input v-model="inputLan" placeholder="Latitude" v-on:keyup.enter="get('coords')"/></div>
+          <div><input v-model="inputLon" placeholder="Longitude" v-on:keyup.enter="get('coords')"/></div>
           <div><button @click="get('coords')">Search</button></div>
         </div>
       </b-tab>
 
-      <b-tab title="IP position" :title-link-class="linkClass(2)">
-        <div class="div-search">
+      <b-tab title="IP position" :title-link-class="linkClassInputType(2)">
+        <div class="div-style">
           <h3 class="title-search">Get AQI from your IP position:</h3>
           <button id="buttonCoordinates" @click="get('here')">Search</button>
         </div>
       </b-tab>
 
     </b-tabs>
+
+    <div>
+      <b-card no-body>
+        <b-tabs v-model="tabIndexInfo" pills card fill>
+          <b-tab :title="'AQI: ' + aqi" :title-link-class="linkClassInfo(0)" active>
+            <b-card bg-variant="AQI_Hazardous" text-variant="white" header="Hazardous" class="text-center" v-if=" aqi > 300">
+              <p class="card-text font-weight-bold">Information: </p>
+              <p class="card-text">{{ longName }}</p>
+              <p class="card-text">Coordinates:</p>
+              <p class="card-text">Latitude: {{ lat }}</p>
+              <p class="card-text">Longitude: {{ lon }}</p>
+            </b-card>
+            <b-card bg-variant="AQI_Very_Unhealthy" text-variant="white" header="Very Unhealthy" class="text-center" v-else-if=" aqi > 200">
+              <p class="card-text font-weight-bold">Information: </p>
+              <p class="card-text">{{ longName }}</p>
+              <p class="card-text">Coordinates:</p>
+              <p class="card-text">Latitude: {{ lat }}</p>
+              <p class="card-text">Longitude: {{ lon }}</p>
+            </b-card>
+            <b-card bg-variant="AQI_Unhealthy" text-variant="white" header="Unhealthy" class="text-center" v-else-if=" aqi > 150">
+              <p class="card-text font-weight-bold">Information: </p>
+              <p class="card-text">{{ longName }}</p>
+              <p class="card-text">Coordinates:</p>
+              <p class="card-text">Latitude: {{ lat }}</p>
+              <p class="card-text">Longitude: {{ lon }}</p>
+            </b-card>
+            <b-card bg-variant="AQI_Unhealthy_Sensitive" text-variant="white" header="Unhealthy for Sensitive Groups" class="text-center" v-else-if=" aqi > 100">
+              <p class="card-text font-weight-bold">Information: </p>
+              <p class="card-text">{{ longName }}</p>
+              <p class="card-text">Coordinates:</p>
+              <p class="card-text">Latitude: {{ lat }}</p>
+              <p class="card-text">Longitude: {{ lon }}</p>
+            </b-card>
+            <b-card bg-variant="AQI_Moderate" text-variant="white" header="Moderate" class="text-center" v-else-if=" aqi > 50">
+              <p class="card-text font-weight-bold">Information: </p>
+              <p class="card-text">{{ longName }}</p>
+              <p class="card-text">Coordinates:</p>
+              <p class="card-text">Latitude: {{ lat }}</p>
+              <p class="card-text">Longitude: {{ lon }}</p>
+            </b-card>
+            <b-card bg-variant="AQI_Good" text-variant="white" header="Good" class="text-center" v-else-if=" aqi <= 50">
+              <p class="card-text font-weight-bold">Information: </p>
+              <p class="card-text">{{ longName }}</p>
+              <p class="card-text">Coordinates:</p>
+              <p class="card-text">Latitude: {{ lat }}</p>
+              <p class="card-text">Longitude: {{ lon }}</p>
+            </b-card>
+          </b-tab>
+          <b-tab :title="name" :title-link-class="linkClassInfo(1)">
+              <b-card class="bg-secondary text-light">
+                <p class="card-text font-weight-bold">Information: </p>
+                <p class="card-text">{{ longName }}</p>
+                <p class="card-text">Coordinates:</p>
+                <p class="card-text">Latitude: {{ lat }}</p>
+                <p class="card-text">Longitude: {{ lon }}</p>
+              </b-card>
+          </b-tab>
+        </b-tabs>
+      </b-card>
+    </div>
   </div>
 </template>
 
@@ -51,45 +103,58 @@ export default {
       aqi: '-',
       longName: '',
       name: '',
+      lat: '',
+      lon: '',
       inputCity: '',
       inputLan: '',
       inputLon: '',
-      tabIndex: 0
+      tabIndexInputType: 0,
+      tabIndexInfo: 0
     }
   },
   methods: {
     async get (usage) {
       if (usage === 'city') {
         this.data = await service.axiosRequest(usage, this.inputCity)
+        this.inputCity = ''
       } else if (usage === 'coords') {
         this.data = await service.axiosRequest(usage, null, this.inputLan, this.inputLon)
+        this.inputLan = ''
+        this.inputLon = ''
       } else {
         this.data = await service.axiosRequest(usage)
       }
       this.data = this.data.data
+      this.lat = this.data.city.geo[0]
+      this.lon = this.data.city.geo[1]
       this.longName = this.data.city.name
       this.name = this.longName.substr(0, this.longName.indexOf(','))
+      if (this.name === '') { this.name = this.data.city.name }
       this.aqi = lodash.lodashCheck(this.data)
 
       console.log(this.data)
     },
-    linkClass (idx) {
-      if (this.tabIndex === idx) {
+    linkClassInputType (idx) {
+      if (this.tabIndexInputType === idx) {
         return ['bg-secondary', 'text-light', 'font-weight-bold']
       } else {
         return ['bg-light', 'text-dark']
       }
     },
-    mounted () {
-      window.addEventListener('keypress', e => {
-        console.log(String.fromCharCode(e.keyCode))
-      })
+    linkClassInfo (idx) {
+      if (this.tabIndexInfo === idx) {
+        return ['bg-secondary', 'text-light', 'font-weight-bold']
+      } else {
+        return ['bg-light', 'text-dark']
+      }
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+@import '../scss/custom.scss';
 
 .div-main {
   width: 65vw;
@@ -134,23 +199,24 @@ button {
   transition: box-shadow 0.2s;
 }
 
-.div-search {
+.div-style {
   width: 70%;
   margin: auto;
-  border: 1px black solid;
+  border: 1px rgb(141, 141, 141) solid;
   border-radius: 10px;
   margin-top: 20px;
   text-align: center;
   padding: 15px;
   max-width: 400px;
-  box-shadow: 0 0 5px #000;
+  box-shadow: 0 0 5px rgb(54, 54, 54);
   transition: box-shadow 0.3s;
   background-color: rgba(255, 255, 255, 0.4);
-  font-family: Lobster;
+  font-family: Fraunces;
 }
-.div-search:hover {
-  transition: box-shadow 0.3s;
-  box-shadow: 0 0 13px #000;
+
+.div-style:hover {
+  transition: box-shadow 0.7s;
+  box-shadow: 0 0 10px rgb(77, 77, 77);
 }
 
 button:hover {
@@ -158,16 +224,13 @@ button:hover {
   box-shadow: 0 0 3px #000;
 }
 
-.aqi h1 {
-  margin: auto;
-  width: fit-content;
-  margin-top: 10px;
-  font-family: Fraunces;
-}
-
 .title-search {
   margin: 0;
   font-size: 25px;
+}
+
+.tab-title-class {
+  color: red;
 }
 
 @media screen and (max-width: 500px) {
