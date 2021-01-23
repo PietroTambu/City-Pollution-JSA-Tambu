@@ -1,20 +1,18 @@
 /* eslint-disable */
 <template>
   <div class="home">
-    <Input class="input"/>
+    <ComponentPollution class="input"/>
   </div>
 </template>
 
 <script>
 
-// import HelloWorld from '@/components/HelloWorld'
-
-import Input from '@/components/Input'
+import ComponentPollution from '@/components/ComponentPollution'
 
 export default {
   name: 'Home',
   components: {
-    Input
+    ComponentPollution
   }
 }
 </script>
@@ -23,6 +21,7 @@ export default {
 
 .input {
   margin-top: 30px;
+  width: 100%;
 }
 
 </style>

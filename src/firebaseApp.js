@@ -12,10 +12,6 @@ const firebaseConfig = {
 
 const FirebaseApp = firebase.initializeApp(firebaseConfig)
 
-console.log('Firebase Project ID:', FirebaseApp.options)
-
 export default {
   FirebaseApp: FirebaseApp
 }
-
-/* eslint-disable eol-last */
