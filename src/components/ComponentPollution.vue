@@ -18,7 +18,13 @@
               <div><button @click="get('coords')">Search</button></div>
             </div>
           </b-tab>
-          <b-tab title="IP position" :title-link-class="linkClassInputType(2)">
+          <b-tab title="GPS location" :title-link-class="linkClassInputType(2)">
+            <div class="div-style">
+              <h3 class="title-search">Get AQI from your GPS position:</h3>
+              <button id="buttonCoordinates" @click="get('gps')">Search</button>
+            </div>
+          </b-tab>
+          <b-tab title="IP location" :title-link-class="linkClassInputType(3)">
             <div class="div-style">
               <h3 class="title-search">Get AQI from your IP position:</h3>
               <button id="buttonCoordinates" @click="get('here')">Search</button>
