@@ -151,7 +151,6 @@ export default {
       () => {
         this.showMain = !this.showMain
       }, 1000)
-    console.log('montata')
   }
 }
 </script>
