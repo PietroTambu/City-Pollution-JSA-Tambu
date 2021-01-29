@@ -6,16 +6,33 @@
           <b-tab title="City name" :title-link-class="linkClassInputType(0)" active>
             <div class="div-style">
               <h3 class="title-search">Insert name of the city:</h3>
-              <div><input v-model="inputCity" placeholder="insert city name" v-on:keyup.enter="get('city')"/></div>
+              <input
+                v-model="inputCity"
+                placeholder="insert city name"
+                v-on:keyup.enter="get('city')"
+                v-bind:class="{'form-control is-invalid': inputCityError}"
+                />
+              <small class="text-danger">{{ textDangerInputCity }}</small>
               <div><button @click="get('city')">Search</button></div>
             </div>
           </b-tab>
           <b-tab title="Geo-coordinates" :title-link-class="linkClassInputType(1)">
             <div class="div-style">
               <h3 class="title-search">Insert geo-coordinates:</h3>
-              <div><input v-model="inputLan" placeholder="Latitude" v-on:keyup.enter="get('coords')"/></div>
-              <div><input v-model="inputLon" placeholder="Longitude" v-on:keyup.enter="get('coords')"/></div>
-              <div><button @click="get('coords')">Search</button></div>
+              <input
+              v-model="inputLan"
+              placeholder="Latitude"
+              v-on:keyup.enter="get('coords')"
+              v-bind:class="{'form-control is-invalid': inputCoordsError}"
+              />
+              <input
+              v-model="inputLon"
+              placeholder="Longitude"
+              v-on:keyup.enter="get('coords')"
+              v-bind:class="{'form-control is-invalid': inputCoordsError}"
+              />
+              <div><small class="text-danger">{{ textDangerInputCoords }}</small></div>
+              <button @click="get('coords')">Search</button>
             </div>
           </b-tab>
           <b-tab title="GPS location" :title-link-class="linkClassInputType(2)">
@@ -100,19 +117,50 @@ export default {
       tabIndexInputType: 0,
       tabIndexInfo: 0,
       showMain: true,
-      showInput: false
+      showInput: false,
+      inputCityError: false,
+      inputCoordsError: false,
+      textDangerInputCity: '',
+      textDangerInputCoords: ''
     }
   },
   methods: {
     async get (usage) {
       if (usage === 'city') {
         this.showInput = !this.showInput
-        this.data = await service.axiosRequest(usage, this.inputCity)
+        if (this.inputCity === '') {
+          this.inputCityError = true
+          this.textDangerInputCity = 'Input cannot be empty!'
+        } else {
+          this.data = await service.axiosRequest(usage, this.inputCity)
+          if (this.data.status === 'error') {
+            this.inputCityError = true
+            this.textDangerInputCity = 'City not found!'
+          } else {
+            this.inputCityError = false
+            this.textDangerInputCity = ''
+          }
+        }
         this.showInput = !this.showInput
         this.inputCity = ''
       } else if (usage === 'coords') {
         this.showInput = !this.showInput
-        this.data = await service.axiosRequest(usage, null, this.inputLan, this.inputLon)
+        if (this.inputLan === '') {
+          this.inputCoordsError = true
+          this.textDangerInputCoords = 'Input cannot be empty!'
+        } else if (this.inputLon === '') {
+          this.inputCoordsError = true
+          this.textDangerInputCoords = 'Input cannot be empty!'
+        } else {
+          this.data = await service.axiosRequest(usage, null, this.inputLan, this.inputLon)
+          if (this.data.status === 'error') {
+            this.inputCoordsError = true
+            this.textDangerInputCoords = 'Location not found, retry...'
+          } else {
+            this.inputCoordsError = false
+            this.textDangerInputCoords = ''
+          }
+        }
         this.showInput = !this.showInput
         this.inputLan = ''
         this.inputLon = ''
@@ -121,13 +169,15 @@ export default {
         this.data = await service.axiosRequest(usage)
         this.showInput = !this.showInput
       }
-      this.data = this.data.data
-      this.lat = this.data.city.geo[0]
-      this.lon = this.data.city.geo[1]
-      this.longName = this.data.city.name
+      this.data = lodash.lodashCheck(this.data.data)
+      // this.data = this.data.data
+      this.lat = this.data.lat
+      this.lon = this.data.lon
+      this.longName = this.data.longName
       this.name = this.longName.substr(0, this.longName.indexOf(','))
-      if (this.name === '') { this.name = this.data.city.name }
-      this.aqi = lodash.lodashCheck(this.data)
+      if (this.name === '') { this.name = this.data.longName }
+      // this.aqi = lodash.lodashCheck(this.data)
+      this.aqi = this.data.aqi
 
       console.log(this.data)
     },

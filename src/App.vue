@@ -1,12 +1,11 @@
-/* eslint-disable */
 <template>
   <div id="app">
     <b-navbar type="dark" variant="dark" toggleable="sm">
       <b-navbar-toggle target="nav_collapse" class="mx-auto"></b-navbar-toggle>
       <b-collapse is-nav id="nav_collapse" class="mx-auto">
-        <b-navbar-nav class="mx-auto"> <!-- class="mx-auto" : align center the navbar -->
+        <b-navbar-nav class="mx-auto">
           <b-nav-item to="/">Home</b-nav-item>
-          <b-nav-item to="/about">About</b-nav-item>
+          <!-- <b-nav-item to="/about">About</b-nav-item> -->
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
