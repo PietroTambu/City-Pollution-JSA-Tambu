@@ -9,11 +9,11 @@
               <input
                 v-model="inputCity"
                 placeholder="insert city name"
-                v-on:keyup.enter="get('city')"
+                v-on:keyup.enter="$event.target.blur(); get('city')"
                 v-bind:class="{'form-control is-invalid': inputCityError}"
                 />
               <small class="text-danger">{{ textDangerInputCity }}</small>
-              <div><button @click="get('city')">Search</button></div>
+              <div><button @click="$event.target.blur(); get('city')">Search</button></div>
             </div>
           </b-tab>
           <b-tab title="Geo-coordinates" :title-link-class="linkClassInputType(1)">
@@ -22,17 +22,17 @@
               <input
               v-model="inputLan"
               placeholder="Latitude"
-              v-on:keyup.enter="get('coords')"
+              v-on:keyup.enter="$event.target.blur(); get('coords')"
               v-bind:class="{'form-control is-invalid': inputCoordsError}"
               />
               <input
               v-model="inputLon"
               placeholder="Longitude"
-              v-on:keyup.enter="get('coords')"
+              v-on:keyup.enter="$event.target.blur(); get('coords')"
               v-bind:class="{'form-control is-invalid': inputCoordsError}"
               />
               <div><small class="text-danger">{{ textDangerInputCoords }}</small></div>
-              <button @click="get('coords')">Search</button>
+              <button @click="$event.target.blur(); get('coords')">Search</button>
             </div>
           </b-tab>
           <b-tab title="GPS location" :title-link-class="linkClassInputType(2)">
@@ -170,15 +170,12 @@ export default {
         this.showInput = !this.showInput
       }
       this.data = lodash.lodashCheck(this.data.data)
-      // this.data = this.data.data
       this.lat = this.data.lat
       this.lon = this.data.lon
       this.longName = this.data.longName
       this.name = this.longName.substr(0, this.longName.indexOf(','))
       if (this.name === '') { this.name = this.data.longName }
-      // this.aqi = lodash.lodashCheck(this.data)
       this.aqi = this.data.aqi
-
       console.log(this.data)
     },
     linkClassInputType (idx) {
@@ -237,7 +234,7 @@ button {
   border: 1px solid #000;
   background-color: #4b4b4bd0;
   color: rgb(255, 255, 255);
-  padding: 5px;
+  padding: 0;
   max-width: 120px;
   max-height: 40px;
   width: 15vw;
