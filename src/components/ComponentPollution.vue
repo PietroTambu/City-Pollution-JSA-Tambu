@@ -20,7 +20,7 @@
             <div class="div-style">
               <h3 class="title-search">Insert geo-coordinates:</h3>
               <input
-              v-model="inputLan"
+              v-model="inputLat"
               placeholder="Latitude"
               v-on:keyup.enter="$event.target.blur(); get('coords')"
               v-bind:class="{'form-control is-invalid': inputCoordsError}"
@@ -112,7 +112,7 @@ export default {
       lat: '',
       lon: '',
       inputCity: '',
-      inputLan: '',
+      inputLat: '',
       inputLon: '',
       tabIndexInputType: 0,
       tabIndexInfo: 0,
@@ -131,6 +131,9 @@ export default {
         if (this.inputCity === '') {
           this.inputCityError = true
           this.textDangerInputCity = 'Input cannot be empty!'
+        } else if ((this.inputCity.includes('/')) || (this.inputCity.includes('\\'))) {
+          this.inputCityError = true
+          this.textDangerInputCity = 'Input cannot contain / or \\'
         } else {
           this.data = await service.axiosRequest(usage, this.inputCity)
           if (this.data.status === 'error') {
@@ -145,14 +148,17 @@ export default {
         this.inputCity = ''
       } else if (usage === 'coords') {
         this.showInput = !this.showInput
-        if (this.inputLan === '') {
+        if (this.inputLat === '') {
           this.inputCoordsError = true
           this.textDangerInputCoords = 'Input cannot be empty!'
         } else if (this.inputLon === '') {
           this.inputCoordsError = true
           this.textDangerInputCoords = 'Input cannot be empty!'
+        } else if ((this.inputLon.includes('/')) || (this.inputLon.includes('\\')) || (this.inputLat.includes('/')) || (this.inputLat.includes('\\'))) {
+          this.inputCoordsError = true
+          this.textDangerInputCoords = 'Input cannot contain / or \\'
         } else {
-          this.data = await service.axiosRequest(usage, null, this.inputLan, this.inputLon)
+          this.data = await service.axiosRequest(usage, null, this.inputLat, this.inputLon)
           if (this.data.status === 'error') {
             this.inputCoordsError = true
             this.textDangerInputCoords = 'Location not found, retry...'
@@ -162,7 +168,7 @@ export default {
           }
         }
         this.showInput = !this.showInput
-        this.inputLan = ''
+        this.inputLat = ''
         this.inputLon = ''
       } else {
         this.showInput = !this.showInput

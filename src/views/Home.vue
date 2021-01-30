@@ -1,4 +1,3 @@
-/* eslint-disable */
 <template>
   <div class="home">
     <ComponentPollution class="input"/>
