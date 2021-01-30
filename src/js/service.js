@@ -1,4 +1,3 @@
-/* eslint-disable */
 const axios = require('axios')
 
 var service = {
@@ -21,24 +20,24 @@ var service = {
         }
       }
     } else if (usage === 'gps') {
-      let getCurrentPositionOptions = new Promise((resolve, reject) => {
+      const getCurrentPositionOptions = new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition((position) => {
           const options = {
-            method: "GET",
+            method: 'GET',
             url:
-              "https://api.waqi.info/feed/geo:" +
+              'https://api.waqi.info/feed/geo:' +
               position.coords.latitude +
-              ";" +
+              ';' +
               position.coords.longitude +
-              "/",
+              '/',
             params: {
               token: process.env.VUE_APP_AICQN_API_KEY
             }
-          };
-          return resolve(options);
-        });
-      });
-      options = await getCurrentPositionOptions;
+          }
+          return resolve(options)
+        })
+      })
+      options = await getCurrentPositionOptions
       // console.log(options);
     } else {
       options = {
@@ -50,7 +49,7 @@ var service = {
       }
     }
     try {
-      console.log(options)
+      // console.log(options)
       const response = await axios.request(options)
       return response.data
     } catch (error) {

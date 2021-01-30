@@ -126,20 +126,25 @@ export default {
   },
   methods: {
     async get (usage) {
+      var error = false
       if (usage === 'city') {
         this.showInput = !this.showInput
         if (this.inputCity === '') {
           this.inputCityError = true
+          error = true
           this.textDangerInputCity = 'Input cannot be empty!'
         } else if ((this.inputCity.includes('/')) || (this.inputCity.includes('\\'))) {
           this.inputCityError = true
           this.textDangerInputCity = 'Input cannot contain / or \\'
+          error = true
         } else {
           this.data = await service.axiosRequest(usage, this.inputCity)
           if (this.data.status === 'error') {
             this.inputCityError = true
             this.textDangerInputCity = 'City not found!'
+            error = true
           } else {
+            error = false
             this.inputCityError = false
             this.textDangerInputCity = ''
           }
@@ -151,38 +156,56 @@ export default {
         if (this.inputLat === '') {
           this.inputCoordsError = true
           this.textDangerInputCoords = 'Input cannot be empty!'
+          error = true
         } else if (this.inputLon === '') {
           this.inputCoordsError = true
           this.textDangerInputCoords = 'Input cannot be empty!'
+          error = true
         } else if ((this.inputLon.includes('/')) || (this.inputLon.includes('\\')) || (this.inputLat.includes('/')) || (this.inputLat.includes('\\'))) {
           this.inputCoordsError = true
           this.textDangerInputCoords = 'Input cannot contain / or \\'
+          error = true
         } else {
           this.data = await service.axiosRequest(usage, null, this.inputLat, this.inputLon)
           if (this.data.status === 'error') {
             this.inputCoordsError = true
             this.textDangerInputCoords = 'Location not found, retry...'
+            error = true
           } else {
             this.inputCoordsError = false
             this.textDangerInputCoords = ''
+            error = false
           }
         }
         this.showInput = !this.showInput
         this.inputLat = ''
         this.inputLon = ''
+      } else if (usage === 'gps') {
+        this.showInput = !this.showInput
+        var permission = await navigator.permissions.query({ name: 'geolocation' })
+        if (permission.state === 'denied') {
+          error = true
+          alert('GPS position is not allowed')
+        } else {
+          this.data = await service.axiosRequest(usage)
+          error = false
+        }
+        this.showInput = !this.showInput
       } else {
         this.showInput = !this.showInput
         this.data = await service.axiosRequest(usage)
         this.showInput = !this.showInput
       }
-      this.data = lodash.lodashCheck(this.data.data)
-      this.lat = this.data.lat
-      this.lon = this.data.lon
-      this.longName = this.data.longName
-      this.name = this.longName.substr(0, this.longName.indexOf(','))
-      if (this.name === '') { this.name = this.data.longName }
-      this.aqi = this.data.aqi
-      console.log(this.data)
+      if (!error) {
+        this.data = lodash.lodashCheck(this.data.data)
+        this.lat = this.data.lat
+        this.lon = this.data.lon
+        this.longName = this.data.longName
+        this.name = this.longName.substr(0, this.longName.indexOf(','))
+        if (this.name === '') { this.name = this.data.longName }
+        this.aqi = this.data.aqi
+        console.log(this.data)
+      }
     },
     linkClassInputType (idx) {
       if (this.tabIndexInputType === idx) {
