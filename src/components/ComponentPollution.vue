@@ -185,7 +185,7 @@ export default {
         var permission = await navigator.permissions.query({ name: 'geolocation' })
         if (permission.state === 'denied') {
           error = true
-          alert('GPS position is not allowed')
+          alert('GPS position is not allowed, give permission and reload...')
         } else {
           this.data = await service.axiosRequest(usage)
           error = false
