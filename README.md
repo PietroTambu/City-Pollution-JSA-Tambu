@@ -1,6 +1,4 @@
 # city-pollution-jsa-tambu
-## JavaScript Advanced Start2Impact
-#### Super Guida JavaScript Advanced Pietro Tamburini
 
 ## Project setup
 ```
